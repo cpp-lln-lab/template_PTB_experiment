@@ -26,7 +26,7 @@ function initEnv(varargin)
     %
 
     % (C) Copyright 2022 CPP_BIDS developers
-    
+
     p = inputParser;
 
     defaultAction = 'init';
@@ -38,7 +38,7 @@ function initEnv(varargin)
 
     action = p.Results.action;
     % verbose = p.Results.verbose;
-    
+
     % Check Matlab and Octave version
 
     octaveVersion = '4.0.3';
@@ -126,19 +126,19 @@ end
 function addDependencies(action)
 
     pth = fileparts(mfilename('fullpath'));
-    
+
     switch lower(action)
 
         case 'init'
-            
+
             run(fullfile(pth, 'lib', 'CPP_PTB', 'cpp_ptb'));
             run(fullfile(pth, 'lib', 'CPP_BIDS', 'cpp_bids'));
             addpath(genpath(fullfile(pth, 'src')));
-    
+
         case 'uninit'
-    
-            cpp_ptb('uninit')
-            cpp_bids('uninit')
+
+            cpp_ptb('uninit');
+            cpp_bids('uninit');
             rmpath(genpath(fullfile(pth, 'src')));
 
     end
