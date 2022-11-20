@@ -1,18 +1,45 @@
-%
-% 1 - Check if version requirements
-% are satisfied and the packages are
-% are installed/loaded:
-%   Octave > 4
-%       - image
-%       - optim
-%       - struct
-%       - statistics
-%
-%   MATLAB >= R2015b
-%
-% 2 - Add project to the O/M path
+function initEnv(varargin)
+    %
+    % 1 - Check if version requirements are satisfied and the packages are are installed/loaded:
+    %   Octave > 4
+    %       - image
+    %       - optim
+    %       - struct
+    %       - statistics
+    %
+    %   MATLAB >= R2015b
+    %
+    % 2 - Add project to the O/M path
+    %
+    % USAGE::
+    %
+    %   initEnv
+    %   initEnv('init')
+    %   initEnv('uninit')
+    %
+    % :param action:
+    % :type action: string
+    %
+    % :returns: - :action: (type) (dimension)
+    %
+    % Example::
+    %
 
-function initEnv
+    % (C) Copyright 2022 CPP_BIDS developers
+    
+    p = inputParser;
+
+    defaultAction = 'init';
+
+    addOptional(p, 'action', defaultAction, @ischar);
+    % addParameter(p, 'verbose', true);
+
+    parse(p, varargin{:});
+
+    action = p.Results.action;
+    % verbose = p.Results.verbose;
+    
+    % Check Matlab and Octave version
 
     octaveVersion = '4.0.3';
     matlabVersion = '8.6.0';
@@ -59,7 +86,7 @@ function initEnv
                'Try this in your terminal:', ...
                ' git submodule update --recursive ']);
     else
-        addDependencies();
+        addDependencies(action);
     end
 
     disp('Correct matlab/octave versions and added to the path!');
@@ -96,13 +123,24 @@ function tryInstallFromForge(packageName)
 
 end
 
-function addDependencies()
+function addDependencies(action)
 
     pth = fileparts(mfilename('fullpath'));
-    addpath(fullfile(pth, 'lib', 'CPP_BIDS'));
-    addpath(genpath(fullfile(pth, 'lib', 'CPP_PTB', 'src')));
-    addpath(fullfile(pth, 'subfun'));
+    
+    switch lower(action)
 
-    checkCppBidsDependencies();
+        case 'init'
+            
+            run(fullfile(pth, 'lib', 'CPP_PTB', 'cpp_ptb'));
+            run(fullfile(pth, 'lib', 'CPP_BIDS', 'cpp_bids'));
+            addpath(genpath(fullfile(pth, 'src')));
+    
+        case 'uninit'
+    
+            cpp_ptb('uninit')
+            cpp_bids('uninit')
+            rmpath(genpath(fullfile(pth, 'src')));
+
+    end
 
 end
