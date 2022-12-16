@@ -9,7 +9,7 @@ function [cfg] = setParameters()
 
     % By default the data will be stored in an output folder created one folder up where the
     % setParamters.m file is. with CPP_BIDS 2.3.0 this will change.
-    % Change that if you want the data to be saved somewhere else, 
+    % Change that if you want the data to be saved somewhere else,
     % below will set it to save the output within the sxperiment folder
     cfg.dir.output = fullfile( ...
                               fileparts(mfilename('fullpath')), ...
