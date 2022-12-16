@@ -70,7 +70,7 @@ try
             [thisEvent, thisFixation, cfg] = preTrialSetup(cfg, iBlock, iTrial);
 
             eyeTracker('Message', cfg, ...
-                ['start_trial-', num2str(iTrial), '_', thisEvent.trial_type]);
+                       ['start_trial-', num2str(iTrial), '_', thisEvent.trial_type]);
 
             % play the dots and collect onset and duraton of the event
             [onset, duration] = doTrial(cfg, thisEvent, thisFixation);
@@ -96,7 +96,7 @@ try
             saveEventsFile('save', cfg, responseEvents);
 
             eyeTracker('Message', cfg, ...
-                ['end_trial-', num2str(iTrial), '_', thisEvent.trial_type]);
+                       ['end_trial-', num2str(iTrial), '_', thisEvent.trial_type]);
 
             waitFor(cfg, cfg.timing.ISI);
 
