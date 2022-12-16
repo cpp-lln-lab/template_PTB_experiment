@@ -49,7 +49,8 @@ try
 
     eyeTracker('StartRecording', cfg);
 
-    cfg = getExperimentStart(cfg);
+    % Wait for Trigger from Scanner and add timestamp of experiment onset
+    cfg.experimentStart = waitForTrigger(cfg);
 
     getResponse('start', cfg.keyboard.responseBox);
 
@@ -78,7 +79,8 @@ try
                                      thisEvent, ...
                                      iBlock, ...
                                      iTrial, ...
-                                     duration, onset, ...
+                                     duration, ...
+                                     onset, ...
                                      cfg, ...
                                      logFile);
 
@@ -88,6 +90,7 @@ try
             % saving in the tsv file
             responseEvents = getResponse('check', cfg.keyboard.responseBox, cfg);
 
+            responseEvents(1).isStim = logFile.isStim;
             responseEvents(1).fileID = logFile.fileID;
             responseEvents(1).extraColumns = logFile.extraColumns;
             saveEventsFile('save', cfg, responseEvents);
@@ -98,6 +101,10 @@ try
             waitFor(cfg, cfg.timing.ISI);
 
         end
+
+        eyeTracker('Message', cfg, ['end_block-', num2str(iBlock)]);
+
+        waitFor(cfg, cfg.timing.IBI);
 
     end
 
