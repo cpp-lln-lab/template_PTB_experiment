@@ -11,7 +11,7 @@ if ~ismac
 end
 
 % make sure we got access to all the required functions and inputs
-initEnv();
+initEnv('init');
 
 % set and load all the parameters to run the experiment
 cfg = setParameters;
@@ -124,6 +124,8 @@ try
     farewellScreen(cfg);
 
     cleanUp();
+
+    initEnv('uninit');
 
 catch
 
