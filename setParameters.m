@@ -7,11 +7,12 @@ function [cfg] = setParameters()
     % Initialize the parameters and general configuration variables
     cfg = struct();
 
-    % by default the data will be stored in an output folder created where the
-    % setParamters.m file is
-    % change that if you want the data to be saved somewhere else
+    % By default the data will be stored in an output folder created one folder up where the
+    % setParamters.m file is. with CPP_BIDS 2.3.0 this will change.
+    % Change that if you want the data to be saved somewhere else,
+    % below will set it to save the output within the sxperiment folder
     cfg.dir.output = fullfile( ...
-                              fileparts(mfilename('fullpath')), '..', ...
+                              fileparts(mfilename('fullpath')), ...
                               'output');
 
     %% Debug mode settings
