@@ -34,6 +34,7 @@ try
 
     % Prepare for the output logfiles with all
     logFile.extraColumns = cfg.extraColumns;
+    logFile = saveEventsFile('init', cfg, logFile);
     logFile = saveEventsFile('open', cfg, logFile);
 
     disp(cfg);
@@ -48,7 +49,8 @@ try
 
     eyeTracker('StartRecording', cfg);
 
-    cfg = getExperimentStart(cfg);
+    % Wait for Trigger from Scanner and add timestamp of experiment onset
+    cfg.experimentStart = waitForTrigger(cfg);
 
     getResponse('start', cfg.keyboard.responseBox);
 
@@ -67,10 +69,8 @@ try
 
             [thisEvent, thisFixation, cfg] = preTrialSetup(cfg, iBlock, iTrial);
 
-            % AVAILABLE IN A NEW RELEASE SOON
-            %
-            % eyeTracker('Message', cfg, ...
-            %     ['start_trial-', num2str(iTrial), '_', thisEvent.trial_type]);
+            eyeTracker('Message', cfg, ...
+                       ['start_trial-', num2str(iTrial), '_', thisEvent.trial_type]);
 
             % play the dots and collect onset and duraton of the event
             [onset, duration] = doTrial(cfg, thisEvent, thisFixation);
@@ -79,7 +79,8 @@ try
                                      thisEvent, ...
                                      iBlock, ...
                                      iTrial, ...
-                                     duration, onset, ...
+                                     duration, ...
+                                     onset, ...
                                      cfg, ...
                                      logFile);
 
@@ -89,18 +90,21 @@ try
             % saving in the tsv file
             responseEvents = getResponse('check', cfg.keyboard.responseBox, cfg);
 
+            responseEvents(1).isStim = logFile.isStim;
             responseEvents(1).fileID = logFile.fileID;
             responseEvents(1).extraColumns = logFile.extraColumns;
             saveEventsFile('save', cfg, responseEvents);
 
-            % AVAILABLE IN A NEW RELEASE SOON
-            %
-            % eyeTracker('Message', cfg, ...
-            %     ['end_trial-', num2str(iTrial), '_', thisEvent.trial_type]);
+            eyeTracker('Message', cfg, ...
+                       ['end_trial-', num2str(iTrial), '_', thisEvent.trial_type]);
 
             waitFor(cfg, cfg.timing.ISI);
 
         end
+
+        eyeTracker('Message', cfg, ['end_block-', num2str(iBlock)]);
+
+        waitFor(cfg, cfg.timing.IBI);
 
     end
 
